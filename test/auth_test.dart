@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Mock Authentication', () {
-    final provider = MockAuthProver();
+    final provider = MockAuthProvider();
     test('Should not be initialized to begin with', () {
       expect(provider.isInitialized, false);
     });
@@ -41,19 +41,15 @@ void main() {
         password: 'anypassword',
       );
 
-      expect(
-        badEmailUser,
-        throwsA(const TypeMatcher<UserNotFoundAuthException>()),
-      );
+      expect(badEmailUser,
+          throwsA(const TypeMatcher<UserNotFoundAuthException>()));
 
       final badPasswordUser = provider.createUser(
         email: 'someone@bar.com',
         password: 'foobar',
       );
-      expect(
-        badPasswordUser,
-        throwsA(const TypeMatcher<WrongPasswordAuthException>()),
-      );
+      expect(badPasswordUser,
+          throwsA(const TypeMatcher<WrongPasswordAuthException>()));
 
       final user = await provider.createUser(
         email: 'foo',
@@ -84,7 +80,7 @@ void main() {
 
 class NotInitializedException implements Exception {}
 
-class MockAuthProver implements AuthProvider {
+class MockAuthProvider implements AuthProvider {
   AuthUser? _user;
   var _isInitialized = false;
   bool get isInitialized => _isInitialized;
@@ -147,5 +143,10 @@ class MockAuthProver implements AuthProvider {
       email: 'foo@bar.com',
     );
     _user = newUser;
+  }
+
+  @override
+  Future<void> sendPasswordReset({required String toEmail}) {
+    throw UnimplementedError();
   }
 }
